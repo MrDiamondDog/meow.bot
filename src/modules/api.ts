@@ -1,4 +1,5 @@
 import { randomFrom } from "../utils";
+import { userAgent } from "../utils/feeder";
 
 export const apiUrl = "https://api.meow.camera";
 
@@ -36,7 +37,11 @@ export type FeederError = {
 }
 
 export async function getFeeder(id: string): Promise<FeederInfo | null> {
-    const res = await fetch(`${apiUrl}/catHouse/${id}`);
+    const res = await fetch(`${apiUrl}/catHouse/${id}`, {
+        headers: {
+            "User-Agent": userAgent
+        }
+    });
 
     if (!res.ok)
         return null;
@@ -50,7 +55,11 @@ export async function getFeeder(id: string): Promise<FeederInfo | null> {
 }
 
 export async function randomFeeder(): Promise<BasicFeederInfo | null> {
-    const res = await fetch(`${apiUrl}/catHouses/random`);
+    const res = await fetch(`${apiUrl}/catHouses/random`, {
+        headers: {
+            "User-Agent": userAgent
+        }
+    });
 
     if (!res.ok)
         return null;
@@ -65,7 +74,8 @@ export async function searchFeeders(query: string): Promise<BasicFeederInfo[] | 
 		method: "POST",
 		headers: {
 			Accept: "application/json",
-			"Content-Type": "application/json"
+			"Content-Type": "application/json",
+            "User-Agent": userAgent
 		},
 		body: JSON.stringify({ query })
 	});

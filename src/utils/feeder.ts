@@ -1,7 +1,8 @@
 import { ComponentTypes, CreateMessageOptions, Message, MessageFlags } from "oceanic.js";
 import { BasicFeederInfo, FeederInfo } from "../modules/api";
 import { spawn } from "child_process";
-import { sleep } from "../utils";
+
+export const userAgent = "Meow.Bot/1.0 (https://github.com/mrdiamonddog/meow.bot/)";
 
 export function feederFullName(feeder: BasicFeederInfo): string {
     return `${feeder.englishName ?? feeder.name}${!feeder.englishName && feeder.translatedName ? ` (${feeder.translatedName})`: ""}`;
@@ -74,14 +75,18 @@ export async function feederMessage(id: string, feeder: FeederInfo): Promise<Cre
 }
 
 export async function feederImage(id: string): Promise<Buffer | null> {
-    const pingRes = await fetch(`https://api.meow.camera/catHouse/${id}/ping/front`);
+    const pingRes = await fetch(`https://api.meow.camera/catHouse/${id}/ping/front`, {
+        headers: {
+            "User-Agent": userAgent
+        }
+    });
 
     if (!pingRes.ok)
         return null;
 
     const ping = await pingRes.json();
 
-    await fetch(ping.url);
+    await fetch(ping.url).catch(() => {});
 
     const ffmpeg = spawn("ffmpeg", [
         "-i", ping.url,

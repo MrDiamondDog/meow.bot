@@ -39,16 +39,15 @@ defineCommand({
         if (!feederDetails)
             return void interaction.reply({ content: `No feeders found with name ${name}.` });
 
-        const existingTracker = feederStore.data.trackers.find(tracker => tracker.feederId === foundFeeders[0].id);
+        const existingTracker = feederStore.data.trackers?.find(tracker => tracker.feederId === foundFeeders[0].id) ?? null;
         if (existingTracker) {
-            const existingUser = existingTracker.users.find(user => user.userId === interaction.user.id);
+            const existingUser = existingTracker.users?.find(user => user.userId === interaction.user.id) ?? null;
             if (existingUser)
                 existingTracker.users = existingTracker.users.filter(user => user.userId !== interaction.user.id);
             else
                 existingTracker.users.push({ userId: interaction.user.id, notify });
-        } else {
+        } else
             feederStore.data.trackers.push({ feederId: foundFeeders[0].id, users: [{ userId: interaction.user.id, notify }], lastMessage: 0 });
-        }
 
         feederStore.save();
 
