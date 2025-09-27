@@ -39,6 +39,9 @@ defineCommand({
         if (!feederDetails)
             return void interaction.reply({ content: `No feeders found with name ${name}.` });
 
+        if (!feederStore.data.trackers)
+            feederStore.data.trackers = [];
+
         const existingTracker = feederStore.data.trackers?.find(tracker => tracker.feederId === foundFeeders[0].id) ?? null;
         if (existingTracker) {
             const existingUser = existingTracker.users?.find(user => user.userId === interaction.user.id) ?? null;
